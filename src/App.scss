@@ -1,0 +1,169 @@
+
+body, #root, .maincontainer, .maincontainer > div:first-Child, .app, .homepage-segment, .homepage-container, .homepage-grid, .main-dashboard-section, .left-menu, .authpage-segment, .authpage-container, .authpage-grid{
+  height: 100%;
+  padding-bottom: 0 !important;
+}
+.App {
+  text-align: center;  
+}
+
+.App-logo { 
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.homepage-segment{  
+  .main-dashboard-section{    
+    .sidebar{
+      // background-color: #4682b4;
+      .logo{
+        padding-bottom: 1rem;
+      }
+      .logo, .avatar{
+        // width: 35px;
+        height: auto;
+        margin: 0 auto;
+      }
+      .avatar{
+        float: left;
+        margin: 0 10px;
+      }
+      .user-name {
+        padding: 10px;
+        color: #fff;
+      }      
+      .left-menu{      
+        background: #2F3D57;        
+        padding: 1rem 0;
+        .ui.vertical.menu {
+          margin-left: 0;
+          .item{
+            color: #fff;   
+            i.icon {
+              width: 1.18em;
+              float: left;
+              margin: 0 .5em 0 0;
+            } 
+          }
+        }
+        
+        .ui.vertical.menu .active.item {
+          background: #5D9DF4;   
+          border-radius: 0 2em 2em 0 !important;   
+        }
+
+        .user-setting{
+          padding:0 10px ;
+          .ui.dropdown>.dropdown.icon{
+            line-height: 2;
+          }
+          .ui.dropdown .menu{
+            right: 0;
+            margin: 20px 0;            
+          }            
+        }       
+        
+      }  
+    }
+    .main-section-container{
+      .dark-btn{
+        border-radius: 2rem;
+        background: #2F3D57;
+        color: #fff;
+      }   
+      .blue-btn{
+        border-radius: 2rem;
+        background: #5699F4;
+        color: #fff;
+      }  
+      .screen-head{
+
+        .action-box{
+          .add-btn{
+            
+          }
+        }
+      }
+    }
+    
+  }
+}
+
+.main-section-container{
+  padding : 1rem;
+}
+.p-0{
+  padding:0!important;
+}
+.pl-0{
+  padding-left: 0!important;
+}
+.pr-0{
+  padding-right: 0!important;
+}
+.pt-0{
+  padding-top: 0!important;
+}
+.pb-0{
+  padding-bottom: 0!important;
+}
+.pl-1{
+  padding-left: 1rem!important;
+}
+.right{
+  float: right;
+}
+.left{
+  float: left;
+}
+.auth-layout {
+  background: #5D9DF4;
+   .auth-box{
+     background-color: #fff;
+     .login-header{
+      color: #444444;
+     }     
+   }
+}
+@media only screen 
+and (min-device-width : 768px) 
+and (max-device-width : 992px) 
+// and (orientation : landscape) 
+{ 
+  .ui.vertical.menu {
+    width: auto !important;
+    margin-right: 0 !important;
+    .item{
+      padding: 0.4em !important;
+    }
+  } 
+}
