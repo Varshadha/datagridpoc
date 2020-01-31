@@ -42,6 +42,7 @@ body, #root, .maincontainer, .maincontainer > div:first-Child, .app, .homepage-s
   }
 }
 .homepage-segment{  
+  background: #f6f6f6 !important;
   .main-dashboard-section{    
     .sidebar{
       // background-color: #4682b4;
@@ -95,6 +96,7 @@ body, #root, .maincontainer, .maincontainer > div:first-Child, .app, .homepage-s
       }  
     }
     .main-section-container{
+      padding-left : 0px;
       .dark-btn{
         border-radius: 2rem;
         background: #2F3D57;
@@ -106,18 +108,67 @@ body, #root, .maincontainer, .maincontainer > div:first-Child, .app, .homepage-s
         color: #fff;
       }  
       .screen-head{
-
+        .page-title {
+          padding-bottom: 10px;
+        }
         .action-box{
           .add-btn{
             
           }
         }
       }
+      .dataTable{
+        padding: 10px;
+        background: #fff;
+        .ui.table{
+          .pageSize .ui.compact.selection.dropdown {
+            border-radius: 20px;
+          } 
+          img.ui.middle.aligned.image.sort {
+            margin-left: 10px;
+          }
+        }
+         :after, :before, th {        
+          border: none !important;
+        }
+        .ui.pagination.secondary.menu a.active.item {
+          border-radius: 20px;
+          background-color: #363A51;
+          color: #fff;
+          padding: 10px;
+          min-width: 2.5em;
+          display: inline;
+          outline: none ;
+        } 
+        img.editIcon, img.deleteIcon, img.saveIcon{
+          width: 14px;
+        }
+        .ui.input.inlineInput>input{
+          padding : 3px;
+        }
+        // .ui.pagination.secondary.menu a:hover.item{
+        //   border-radius: 20px;
+        //   padding: 10px;
+        //   min-width: 2.5em;
+        //   display: inline;
+        // }
+        // :link:focus, :visited:focus { 
+        //  outline: none; 
+        // }
+      }
+      
     }
     
   }
 }
-
+.searchInputField input {
+  border-radius: 50px !important;
+}
+.searchButton .ui.button {
+  border-radius: 50px;
+  color: #fff;
+  background: #2F3D57;
+}
 .main-section-container{
   padding : 1rem;
 }
@@ -144,6 +195,12 @@ body, #root, .maincontainer, .maincontainer > div:first-Child, .app, .homepage-s
 }
 .left{
   float: left;
+}
+.textRight{
+  text-align: right !important;
+}
+.textLeft{
+  text-align: left !important;
 }
 .auth-layout {
   background: #5D9DF4;

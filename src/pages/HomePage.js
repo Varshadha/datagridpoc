@@ -67,19 +67,7 @@ class HomePage extends Component{
             <div className="app">              
               <Segment className="homepage-segment" vertical>
                 <Container fluid className="homepage-container">
-                  <Grid className="homepage-grid">
-                  {/* <Grid.Row className="header-section">
-                      <Grid.Column mobile={6} tablet={4} computer={4}>
-                        <Image className="logo" src="https://react.semantic-ui.com/logo.png" alt="logo" />
-                       </Grid.Column>
-                       <Grid.Column mobile={10} tablet={12} computer={12} className="pl-0">
-                          <div className="top-header-menu">
-                              <div className="user-name">
-                                Welcome, John!
-                              </div>
-                          </div>
-                       </Grid.Column>
-                  </Grid.Row>  */}
+                  <Grid className="homepage-grid">                  
                   <Grid.Row className="main-dashboard-section pt-0 pb-0">
                     <Grid.Column mobile={16} tablet={4} computer={4}  style={{ paddingTop: 0 }} className="sidebar">
                       <div className="left-menu" >
@@ -122,14 +110,14 @@ class HomePage extends Component{
                           <Icon name='laptop' />
                           SSP Master
                         </Menu.Item>
-                        {/* <Menu.Item
+                        <Menu.Item
                           name='edge'
                           active={activeItem === 'edge'}
                           onClick={this.handleItemClick}
                         >
                           <Icon name='server' />
                           Edge Server
-                        </Menu.Item> */}
+                        </Menu.Item>
                         <Menu.Item
                           name='video-library'
                           active={activeItem === 'video-library'}
@@ -149,7 +137,7 @@ class HomePage extends Component{
                       </Menu>
                       </div>
                      </Grid.Column>
-                     <Grid.Column mobile={16} tablet={12} computer={12} >
+                     <Grid.Column mobile={16} tablet={12} computer={12} className="rightPanel pl-0">
                       {this.getPage(this.state.pathName)}
                      </Grid.Column>
                   </Grid.Row>

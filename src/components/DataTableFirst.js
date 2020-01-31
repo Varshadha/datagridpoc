@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
-import { Table, Icon, Pagination, Dropdown, Confirm, Image, Form, Input, Button } from 'semantic-ui-react';
+import { Table, Icon, Pagination, Dropdown, Confirm, Image } from 'semantic-ui-react';
 import sort from '../assets/images/sort.png';
 import editIcon from '../assets/images/edit.svg';
 import deleteIcon from '../assets/images/delete.svg';
-import saveIcon from '../assets/images/save.svg';
 
 const rowsOptions = [    
     { key: '5', text: '5', value: '5' },
@@ -11,26 +10,22 @@ const rowsOptions = [
     { key: '15', text: '15', value: '15' },
     { key: '20', text: '20', value: '20' }
   ]
-class DataTable extends Component{    
+class DataTableFirst extends Component{    
     constructor(props){
         super(props)
         this.state = { 
             open: false, 
             itemId :null,
-            order : 1,
-            editable : false 
+            order : 1 
         }
         this.renderTableData = this.renderTableData.bind(this);
         this.deleteRecord = this.deleteRecord.bind(this);
         this.handlePagination = this.handlePagination.bind(this);
         this.updateState = this.updateState.bind(this);        
         this.handleOnChange = this.handleOnChange.bind(this);
-        this.handleConfirm = this.handleConfirm.bind(this);
-        this.handleCancel = this.handleCancel.bind(this);
-        this.handleSortChange = this.handleSortChange.bind(this);
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.renderTableData = this.renderTableData.bind(this);
+        this.handleConfirm = this.handleConfirm.bind(this)
+        this.handleCancel = this.handleCancel.bind(this)
+        this.handleSortChange = this.handleSortChange.bind(this)
     }
     handlePagination = (e, {activePage}) =>{
         e.preventDefault();
@@ -38,16 +33,9 @@ class DataTable extends Component{
     }
     deleteRecord = (itemId) =>{                 
         this.props.deleteGreenList(itemId);
-        this.setState({itemId :null})
     }
-    updateState = (item) =>{         
-        if(this.state.editable && this.state.itemId == item.id){
-            this.props.updateState(item);
-            this.props.handleSubmit();
-            this.setState({itemId :null})
-        }            
-        else
-        this.setState({ editable: true, itemId : item.id })
+    updateState = (item) =>{ 
+        this.props.updateState(item);
     }
     renderTableData(tableDataList) {
         return tableDataList.map((item,key) =>{
@@ -55,20 +43,10 @@ class DataTable extends Component{
             return (         
             <Table.Row key={item.id}>
                 {col.map((val, index) => {
-                    return val !== 'id' ? (
-                    ((this.state.itemId == item.id && this.state.editable) ? 
-                    <Table.HeaderCell key={index}><Input
-                    name={val}
-                    data-id={item.id}                    
-                    value={item.value}
-                    onChange={this.handleChange}
-                    className="inlineInput"
-                    /></Table.HeaderCell> : <Table.HeaderCell key={index}>{item[col[index]]}</Table.HeaderCell>
-                    )
-                    ) : undefined
+                    return val !== 'id' ? <Table.HeaderCell key={index}>{item[col[index]]}</Table.HeaderCell> : undefined
                   })}
                 <Table.HeaderCell>                   
-                    <Image className="editIcon" src={(this.state.editable && this.state.itemId == item.id) ? saveIcon : editIcon} alt="editIcon" verticalAlign='middle' onClick={() => this.updateState(item)}/>
+                    <Image className="editIcon" src={editIcon} alt="editIcon" verticalAlign='middle' onClick={() => this.updateState(item)}/>
                     <Image className="deleteIcon" src={deleteIcon} alt="deleteIcon" verticalAlign='middle' onClick={() => this.setState({ open: true , itemId : item.id})}/>
                 </Table.HeaderCell>                   
             </Table.Row>
@@ -88,40 +66,6 @@ class DataTable extends Component{
         this.setState({ order: !order })
         this.props.handleSortChange(col.toLowerCase(),(order) ? 'asc' : 'desc')
     }
-    handleChange = (e, data) =>{
-        e.preventDefault();
-        this.props.handleChange(data.name, data.value);
-    }
-    handleSubmit = (e) =>{
-        e.preventDefault();
-        this.props.handleSubmit();
-    }
-    renderTableRowForm(formDataList) {
-        return (
-            <Table.Row> 
-            {/* <Form onSubmit={this.handleSubmit}> */}
-            {formDataList.map((item,key) =>{
-            let col = Object.keys(item);      
-            return (         
-                <Table.HeaderCell key={key}>
-                    <Input
-                    name={item.column}
-                    data-id={key}
-                    type={item.type}
-                    value={item.value}
-                    onChange={this.handleChange}
-                    className="inlineInput"
-                    // disabled={this.state.editable}
-                    />
-                </Table.HeaderCell>                
-            )
-           })}
-                <Table.HeaderCell>      
-                    <Image className="saveIcon" src={saveIcon} alt="saveIcon" verticalAlign='middle' onClick={this.handleSubmit}/>
-                </Table.HeaderCell> 
-            </Table.Row>)
-     }
-     
     render(){
         return(
             <>
@@ -146,9 +90,8 @@ class DataTable extends Component{
                     </Table.HeaderCell>
                 ))}                
             </Table.Row>
-            </Table.Header>            
+            </Table.Header>
             <Table.Body>  
-            {/* {this.renderTableRowForm(this.props.formDataList)}    */}
             {this.renderTableData(this.props.tableDataList)}         
             </Table.Body>
             <Table.Footer>
@@ -164,7 +107,7 @@ class DataTable extends Component{
                     totalPages={this.props.pageCount}
                     defaultActivePage={1}/>                    
                 </Table.HeaderCell>
-                <Table.HeaderCell colSpan='2' className="rowsPerPage textRight">
+                <Table.HeaderCell colSpan='2' className="textRight">
                     <span className="pageSize">                    
                         Rows per page {' '}
                         <Dropdown    

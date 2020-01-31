@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { Icon, Modal, Table, Button, Header, Form, Pagination, Grid } from 'semantic-ui-react'
 import UserService from '../services/UserService';
-
+import Toaster from '../Toaster'
 class VideoLibrary extends Component{
     constructor(props){
         super(props)
@@ -41,8 +41,12 @@ class VideoLibrary extends Component{
                         return item.id !== response.id
                     })});
                 me.setState({videoList : [...me.state.videoList, response], open: false}) 
+                let msg = 'Record added successfully'
+                if(updateFlag)
+                    msg = "Record updated successfully"
+                Toaster.show('success',msg); 
             }else{
-                console.log('Error : ',err);
+                Toaster.show('error',err);
             }
         })
     }
@@ -53,7 +57,7 @@ class VideoLibrary extends Component{
             if(!err && response ){                
                 me.setState({videoList : response})
             }else{
-                console.log('Error : ',err);
+                Toaster.show('error',err);
             }
         })
     }
@@ -64,8 +68,9 @@ class VideoLibrary extends Component{
                 me.setState({videoList: me.state.videoList.filter(function(item) { 
                     return item.id !== itemId
                 })});
+                Toaster.show('success','Record deleted successfully');
             }else{
-                console.log('Error : ',err);
+                Toaster.show('error',err);
             }
         })
     }

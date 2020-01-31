@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
-import { Icon, Modal, Table, Button, Header, Form, Pagination, Grid  } from 'semantic-ui-react'
+import { Icon, Modal, Table, Button, Header, Form, Pagination, Grid, Input  } from 'semantic-ui-react'
 import UserService from '../services/UserService';
+import Toaster from '../Toaster'
 
 class BusinessRule extends Component{
     constructor(props){
@@ -43,8 +44,7 @@ class BusinessRule extends Component{
         this.setState({
             ruleObj: newObject 
         })
-    }
-    
+    }    
     handleSubmit = () => {
         const { networkSearch, zoneSearch } = this.state
         this.setState({ networkSearch: networkSearch, zoneSearch: zoneSearch })
@@ -58,7 +58,7 @@ class BusinessRule extends Component{
             if(!err && response ){                
                 me.setState({businessRules : response})
             }else{
-                console.log('Error : ',err);
+                Toaster.show('error',err);
             }
         })
     }
@@ -85,8 +85,13 @@ class BusinessRule extends Component{
                         return item.id !== response.id
                     })});
                 me.setState({businessRules : [...me.state.businessRules, response], open: false}) 
+
+                let msg = 'Record added successfully'
+                if(updateFlag)
+                    msg = "Record updated successfully"
+                Toaster.show('success',msg); 
             }else{
-                console.log('Error : ',err);
+                Toaster.show('error',err);
             }
         })
     }
@@ -97,7 +102,7 @@ class BusinessRule extends Component{
             if(!err && response ){                
                 me.setState({businessRules : response})
             }else{
-                console.log('Error : ',err);
+                Toaster.show('error',err);
             }
         })
     }
@@ -108,8 +113,9 @@ class BusinessRule extends Component{
                 me.setState({businessRules: me.state.businessRules.filter(function(item) { 
                     return item.id !== itemId
                 })});
+                Toaster.show('success','Record deleted successfully');
             }else{
-                console.log('Error : ',err);
+                Toaster.show('error',err);
             }
         })
     }
@@ -133,19 +139,24 @@ class BusinessRule extends Component{
                             <Grid.Column mobile={6} tablet={4} computer={12}>
                             <Form className="search-form" onSubmit={this.handleSubmit}>
                             <Form.Group>
-                                <Form.Input
-                                placeholder='Network'
-                                name='networkSearch'
-                                value={networkSearch}
-                                onChange={this.handleChange}
-                                />
-                                <Form.Input
+                                <Input icon 
+                                 placeholder='Network'
+                                 name='networkSearch'
+                                 value={networkSearch}
+                                 onChange={this.handleChange} className="searchInputField">
+                                <input />
+                                <Icon name='search' />
+                                </Input>
+
+                                <Input icon 
                                 placeholder='Zone'
                                 name='zoneSearch'
                                 value={zoneSearch}
-                                onChange={this.handleChange}
-                                />
-                                <Form.Button content='Search' />
+                                onChange={this.handleChange}className="searchInputField">
+                                <input />
+                                <Icon name='search' />
+                                </Input>                                
+                                <Form.Button content='Search' className="searchButton"/>
                             </Form.Group>
                             </Form>
                             </Grid.Column>

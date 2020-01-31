@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
-import { Icon, Modal, Table, Button, Header, Form, Pagination, Grid } from 'semantic-ui-react'
+import { Icon, Modal, Table, Button, Header, Form, Pagination, Grid, Input } from 'semantic-ui-react'
 import UserService from '../services/UserService';
+import Toaster from '../Toaster'
 
 class MasterNetworkzone extends Component{
     constructor(props){
@@ -16,7 +17,9 @@ class MasterNetworkzone extends Component{
             pageSize : 10,
             pageCount : 2,    
             open : false,
-            updateFlag : false,                    
+            updateFlag : false,  
+            networkSearch: '', 
+            zoneSearch: '',                  
         }
         this.handleChange = this.handleChange.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
@@ -26,6 +29,23 @@ class MasterNetworkzone extends Component{
         this.deleteMNZ = this.deleteMNZ.bind(this)
     }   
     handleChange = (e, { name, value }) => this.setState({ [name]: value })
+    handleSearchSubmit = () => {
+        const { networkSearch, zoneSearch } = this.state
+        this.setState({ networkSearch: networkSearch, zoneSearch: zoneSearch })
+        let reqData = {}
+        reqData.network = networkSearch
+        if(zoneSearch){
+            reqData.zone = zoneSearch
+        }
+        let me = this;
+        UserService.searchMasterNetworkZone(reqData,function(err, response){
+            if(!err && response ){                
+                me.setState({MNZList : response})
+            }else{
+                Toaster.show('error',err);
+            }
+        })
+    }
     handleSubmit = () => {
         const { id, adServerId, qttMasterkey, cueNet, cueZone } = this.state
         let updateFlag = this.state.updateFlag
@@ -45,8 +65,12 @@ class MasterNetworkzone extends Component{
                         return item.id !== response.id
                     })});
                 me.setState({MNZList : [...me.state.MNZList, response], open: false}) 
+                let msg = 'Record added successfully'
+                if(updateFlag)
+                    msg = "Record updated successfully"
+                Toaster.show('success',msg); 
             }else{
-                console.log('Error : ',err);
+                Toaster.show('error',err);
             }
         })
     }
@@ -57,7 +81,7 @@ class MasterNetworkzone extends Component{
             if(!err && response ){
                 me.setState({MNZList : response})
             }else{
-                console.log('Error : ',err);
+                Toaster.show('error',err);
             }
         })
     }
@@ -76,14 +100,15 @@ class MasterNetworkzone extends Component{
                 me.setState({MNZList: me.state.MNZList.filter(function(item) { 
                     return item.id !== itemId
                 })});
+                Toaster.show('success','Record deleted successfully');
             }else{
-                console.log('Error : ',err);
+                Toaster.show('error',err);
             }
         })
     }
     close = () => this.setState({ open: false })
     render(){
-        const { id, adServerId, qttMasterkey, cueNet, cueZone, open } = this.state
+        const { id, adServerId, qttMasterkey, cueNet, cueZone, open, networkSearch, zoneSearch } = this.state
         return(
             <div className="main-section-container">
                 <div className="screen-head">
@@ -93,6 +118,28 @@ class MasterNetworkzone extends Component{
                     <div className="action-box">
                         <Grid>
                             <Grid.Column mobile={6} tablet={4} computer={12}>
+                            <Form className="search-form" onSubmit={this.handleSearchSubmit}>
+                            <Form.Group>
+                                <Input icon 
+                                 placeholder='Network'
+                                 name='networkSearch'
+                                 value={networkSearch}
+                                 onChange={this.handleChange} className="searchInputField">
+                                <input />
+                                <Icon name='search' />
+                                </Input>
+                                
+                                <Input icon 
+                                placeholder='Zone'
+                                name='zoneSearch'
+                                value={zoneSearch}
+                                onChange={this.handleChange}className="searchInputField">
+                                <input />
+                                <Icon name='search' />
+                                </Input>                                
+                                <Form.Button content='Search' className="searchButton"/>
+                            </Form.Group>
+                            </Form>
                             </Grid.Column>
                             <Grid.Column mobile={16} tablet={12} computer={4}> 
                             <Button compact className="blue-btn add-btn right" onClick={() => {this.setState({ open: true,updateFlag: false , adServerId: '', qttMasterkey: '', cueNet:'', cueZone: '' })}}>Add</Button>

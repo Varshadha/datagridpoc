@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
-import { Icon, Modal, Table, Button, Header, Form, Pagination, Grid } from 'semantic-ui-react'
+import { Icon, Modal, Table, Button, Header, Form, Pagination, Grid, Input } from 'semantic-ui-react'
 import UserService from '../services/UserService';
+import Toaster from '../Toaster'
 
 class Edge extends Component{
     constructor(props){
@@ -13,7 +14,9 @@ class Edge extends Component{
             page : 1,
             pageSize : 10,
             pageCount : 3,    
-            open: false                    
+            open: false,
+            edgeNameSearch : '',
+            ipAddressSearch :''
         }
         this.handleChange = this.handleChange.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
@@ -21,7 +24,24 @@ class Edge extends Component{
         this.deleteEdge = this.deleteEdge.bind(this)
         this.close =  this.close.bind(this)
         this.getAllEdges();
-    }   
+    }           
+    handleSearchSubmit = () => {
+        const { edgeNameSearch, ipAddressSearch } = this.state
+        this.setState({ edgeNameSearch: edgeNameSearch, ipAddressSearch: ipAddressSearch })
+        let reqData = {}
+        reqData.edgeName = edgeNameSearch
+        if(ipAddressSearch){
+            reqData.ipAddress = ipAddressSearch
+        }
+        let me = this;
+        UserService.searchEdge(reqData,function(err, response){
+            if(!err && response ){                
+                me.setState({edgeList : response})
+            }else{                
+                Toaster.show('error',err);
+            }
+        })
+    }
     handleChange = (e, { name, value }) => this.setState({ [name]: value })
     handleSubmit = () => {
         const { id, edgeName, ipAddress} = this.state
@@ -40,8 +60,13 @@ class Edge extends Component{
                         return item.id !== response.id
                     })});
                 me.setState({edgeList : [...me.state.edgeList, response], open: false}) 
+                
+                let msg = 'Record added successfully'
+                if(updateFlag)
+                    msg = "Record updated successfully"
+                Toaster.show('success',msg);
             }else{
-                console.log('Error : ',err);
+                Toaster.show('error',err);
             }
         })
     }
@@ -52,7 +77,7 @@ class Edge extends Component{
             if(!err && response ){                
                 me.setState({edgeList : response})
             }else{
-                console.log('Error : ',err);
+                Toaster.show('error',err);
             }
         })
     }
@@ -67,14 +92,15 @@ class Edge extends Component{
                 me.setState({edgeList: me.state.edgeList.filter(function(item) { 
                     return item.id !== itemId
                 })});
+                Toaster.show('success','Record deleted successfully');
             }else{
-                console.log('Error : ',err);
+                Toaster.show('error',err);
             }
         })
     }
     close = () => this.setState({ open: false })
     render(){
-        const { id, edgeName, ipAddress, open} = this.state
+        const { id, edgeName, ipAddress, open, edgeNameSearch, ipAddressSearch} = this.state
         return(
             <div className="main-section-container">
                 <div className="screen-head">
@@ -84,6 +110,25 @@ class Edge extends Component{
                     <div className="action-box">
                         <Grid>
                             <Grid.Column mobile={6} tablet={4} computer={12}>
+                            <Form className="search-form" onSubmit={this.handleSearchSubmit}>
+                            <Form.Group>
+                                <Input icon placeholder='Edge Server Name'
+                                name='edgeNameSearch'
+                                value={edgeNameSearch}
+                                onChange={this.handleChange} className="searchInputField">
+                                <input />
+                                <Icon name='search' />
+                                </Input>
+                                <Form.Input
+                                placeholder='IP Address'
+                                name='ipAddressSearch'
+                                value={ipAddressSearch}
+                                onChange={this.handleChange}
+                                className="searchInputField"
+                                />
+                                <Form.Button content='Search'  className="searchButton"/>
+                            </Form.Group>
+                            </Form>
                             </Grid.Column>
                             <Grid.Column mobile={16} tablet={12} computer={4}> 
                                <Button compact className="blue-btn add-btn right"  onClick={() => {this.setState({ open: true,updateFlag: false , edgeName: '', ipAddress: '' })}}>Add</Button>

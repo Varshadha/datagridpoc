@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
-import { Icon, Modal, Table, Button, Header, Form, Pagination, Grid } from 'semantic-ui-react'
+import { Icon, Modal, Table, Button, Header, Form, Pagination, Grid, Input } from 'semantic-ui-react'
 import UserService from '../services/UserService';
-
+import Toaster from '../Toaster'
 class SspMaster extends Component{
     constructor(props){
         super(props)
@@ -13,7 +13,8 @@ class SspMaster extends Component{
             page : 1,
             pageSize : 10,
             pageCount : 2,       
-            open : false                 
+            open : false,
+            nameSearch :''
         }
         this.handleChange = this.handleChange.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
@@ -23,6 +24,20 @@ class SspMaster extends Component{
         this.getSspMaster();
     }   
     handleChange = (e, { name, value }) => this.setState({ [name]: value })
+    handleSearchSubmit = () => {
+        const { nameSearch } = this.state
+        this.setState({ nameSearch: nameSearch })
+        let reqData = {}
+        reqData.sspName = nameSearch       
+        let me = this;
+        UserService.searchSspMaster(reqData,function(err, response){
+            if(!err && response ){                
+                me.setState({sspList : response})
+            }else{                
+                Toaster.show('error',err);
+            }
+        })
+    }
     handleSubmit = () => {
         const { id, sspName, endPoint} = this.state
         let updateFlag = this.state.updateFlag
@@ -40,8 +55,12 @@ class SspMaster extends Component{
                         return item.id !== response.id
                     })});
                 me.setState({sspList : [...me.state.sspList, response], open: false}) 
+                let msg = 'Record added successfully'
+                if(updateFlag)
+                    msg = "Record updated successfully"
+                Toaster.show('success',msg); 
             }else{
-                console.log('Error : ',err);
+                Toaster.show('error',err);
             }
         })
     }
@@ -52,7 +71,7 @@ class SspMaster extends Component{
             if(!err && response ){                
                 me.setState({sspList : response})
             }else{
-                console.log('Error : ',err);
+                Toaster.show('error',err);
             }
         })
     }
@@ -63,8 +82,9 @@ class SspMaster extends Component{
                 me.setState({sspList: me.state.sspList.filter(function(item) { 
                     return item.id !== itemId
                 })});
+                Toaster.show('success','Record deleted successfully');
             }else{
-                console.log('Error : ',err);
+                Toaster.show('error',err);
             }
         })
     }
@@ -74,7 +94,7 @@ class SspMaster extends Component{
     }
     close = () => this.setState({ open: false })
     render(){
-        const { id, sspName, endPoint, open} = this.state
+        const { id, sspName, endPoint, open, nameSearch} = this.state
         return(
             <div className="main-section-container">
                 
@@ -85,6 +105,18 @@ class SspMaster extends Component{
                     <div className="action-box">
                         <Grid>
                             <Grid.Column mobile={6} tablet={4} computer={12}>
+                            <Form className="search-form" onSubmit={this.handleSearchSubmit}>
+                            <Form.Group>
+                                <Input icon placeholder='Search SSP Name'
+                                name='nameSearch'
+                                value={nameSearch}
+                                onChange={this.handleChange} className="searchInputField">
+                                <input />
+                                <Icon name='search' />
+                                </Input>                                
+                                <Form.Button content='Search'  className="searchButton"/>
+                            </Form.Group>
+                            </Form>
                             </Grid.Column>
                             <Grid.Column mobile={16} tablet={12} computer={4}> 
                                <Button compact className="blue-btn add-btn right" onClick={() => {this.setState({ open: true,updateFlag: false , sspName: '', endPoint: ''})}}>Add</Button>
