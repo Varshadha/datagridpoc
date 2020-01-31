@@ -54,9 +54,8 @@ class GreenList extends Component{
 
     handleChange = (name, value) => this.setState({ [name]: value })
 
-    handleSubmit = () => {
-        const { id, name, duration, usageCount} = this.state
-        let updateFlag = this.state.updateFlag
+    handleSubmit = (updatedItem, updateFlag) => {
+        const { id, name, duration, usageCount} = updateFlag ? updatedItem : this.state
         this.setState({ name: name, duration: duration, usageCount:usageCount})
         let reqData = {
             "name" : name,            
@@ -113,7 +112,9 @@ class GreenList extends Component{
     }
     updateState(item){
         // this.setState({ id :item.id, name: item.name, duration: item.duration, usageCount: item.usageCount, open: true, updateFlag :true })
-        this.setState({ id :item.id, name: item.name, duration: item.duration, usageCount: item.usageCount, updateFlag :true })
+        // this.setState({ id :item.id, name: item.name, duration: item.duration, usageCount: item.usageCount, updateFlag :true })
+        let updateFlag  = true
+        this.handleSubmit(item, updateFlag)
     }    
     close = () => this.setState({ open: false })
 

@@ -18,7 +18,8 @@ class DataTable extends Component{
             open: false, 
             itemId :null,
             order : 1,
-            editable : false 
+            editable : false,
+            updateItem : {} 
         }
         this.renderTableData = this.renderTableData.bind(this);
         this.deleteRecord = this.deleteRecord.bind(this);
@@ -31,6 +32,7 @@ class DataTable extends Component{
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.renderTableData = this.renderTableData.bind(this);
+        this.handleUpdateChange = this.handleUpdateChange.bind(this);
     }
     handlePagination = (e, {activePage}) =>{
         e.preventDefault();
@@ -43,11 +45,11 @@ class DataTable extends Component{
     updateState = (item) =>{         
         if(this.state.editable && this.state.itemId == item.id){
             this.props.updateState(item);
-            this.props.handleSubmit();
+            // this.props.handleSubmit(item);
             this.setState({itemId :null})
         }            
         else
-        this.setState({ editable: true, itemId : item.id })
+        this.setState({ editable: true, itemId : item.id, updateItem : item })
     }
     renderTableData(tableDataList) {
         return tableDataList.map((item,key) =>{
@@ -56,19 +58,24 @@ class DataTable extends Component{
             <Table.Row key={item.id}>
                 {col.map((val, index) => {
                     return val !== 'id' ? (
-                    ((this.state.itemId == item.id && this.state.editable) ? 
-                    <Table.HeaderCell key={index}><Input
+                    ((this.state.itemId == item.id && this.state.editable) ?
+                    <Table.HeaderCell key={index}>
+
+                    <Input
                     name={val}
                     data-id={item.id}                    
-                    value={item.value}
-                    onChange={this.handleChange}
+                    value={this.state.updateItem[val]}
+                    // value={!item.value ? item[col[index]] : item.value}
+                    onChange={this.handleUpdateChange}
                     className="inlineInput"
-                    /></Table.HeaderCell> : <Table.HeaderCell key={index}>{item[col[index]]}</Table.HeaderCell>
+                    />
+                    
+                    </Table.HeaderCell> : <Table.HeaderCell key={index}>{item[col[index]]}</Table.HeaderCell>
                     )
                     ) : undefined
                   })}
                 <Table.HeaderCell>                   
-                    <Image className="editIcon" src={(this.state.editable && this.state.itemId == item.id) ? saveIcon : editIcon} alt="editIcon" verticalAlign='middle' onClick={() => this.updateState(item)}/>
+                    <Image className="editIcon" src={(this.state.editable && this.state.itemId == item.id) ? saveIcon : editIcon} alt="editIcon" verticalAlign='middle' onClick={() => this.updateState((this.state.itemId == item.id && this.state.editable) ? this.state.updateItem : item)}/>
                     <Image className="deleteIcon" src={deleteIcon} alt="deleteIcon" verticalAlign='middle' onClick={() => this.setState({ open: true , itemId : item.id})}/>
                 </Table.HeaderCell>                   
             </Table.Row>
@@ -96,6 +103,17 @@ class DataTable extends Component{
         e.preventDefault();
         this.props.handleSubmit();
     }
+    handleUpdateChange = (e, data) => {
+        
+        // this.setState({...this.state.updateItem, [data.name]: data.value});
+        this.setState(prevState => ({
+            updateItem: {                   // object that we want to update
+                ...prevState.updateItem,    // keep all other key-value pairs
+                [data.name]: data.value      // update the value of specific key
+            }
+        }))
+    }
+
     renderTableRowForm(formDataList) {
         return (
             <Table.Row> 
@@ -148,7 +166,7 @@ class DataTable extends Component{
             </Table.Row>
             </Table.Header>            
             <Table.Body>  
-            {/* {this.renderTableRowForm(this.props.formDataList)}    */}
+            {this.renderTableRowForm(this.props.formDataList)}   
             {this.renderTableData(this.props.tableDataList)}         
             </Table.Body>
             <Table.Footer>
